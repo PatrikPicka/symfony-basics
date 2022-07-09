@@ -16,10 +16,10 @@ INSTALLING SASS, BOOTSTRAP, jQuery
  - npm install sass-loader
 	-- webpack.config.js - odkomentovat řádek s ".enableSassLoader()"
  - npm install bootstrap --save-dev
-	-- assets/app.js - přidat kód "require("bootstrap");"
-	-- assets/styles/app.scss - přidat kód "@import '~bootstrap/scss/bootstrap.scss';"
+	- assets/app.js - přidat kód "require("bootstrap");"
+	- assets/styles/app.scss - přidat kód "@import '~bootstrap/scss/bootstrap.scss';"
  - npm install jquery
-	-- assets/app.js - přidat kód "const $ = require("jquery"); global.$ = global.jquery = $;"
+	- assets/app.js - přidat kód "const $ = require("jquery"); global.$ = global.jquery = $;"
 
 SYMFONY PROFILER / DEBUGING(bottom info bar)
  - composer require --dev symfony/web-profiler-bundle
