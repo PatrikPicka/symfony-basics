@@ -19,17 +19,18 @@ INSTALLING SASS, BOOTSTRAP, jQuery
 	- assets/app.js - přidat kód "require("bootstrap");"
 	- assets/styles/app.scss - přidat kód "@import '~bootstrap/scss/bootstrap.scss';"
  - npm install jquery
-	- assets/app.js - přidat kód "const $ = require("jquery"); global.$ = global.jquery = $;"
+	- assets/app.js - přidat kód "const \$ = require("jquery"); global.\$ = global.jquery = \$;"
 
 SYMFONY PROFILER / DEBUGING(bottom info bar)
  - composer require --dev symfony/web-profiler-bundle
  - composer require --dev symfony/var-dumper (for using dd(your_data_to_dump);)
- - composer require --dev symfony/debug-bundle (for dumping informations into the profiler so you do not have to use dd(your_data_to_dump) but instead you can use dump(your_data_to_dump))
+ - composer require --dev symfony/debug-bundle 
+  	- (for dumping informations into the profiler so you do not have to use dd(your_data_to_dump) but instead you can use dump(your_data_to_dump))
 
 DATA FIXTURES (for creating test data etc.)
  - composer require --dev orm-fixtures
-	- bin/console make:fixtures --- creates fixture
-	- bin/console doctrine:fixtures:load --- executes fixtures
+ - bin/console make:fixtures --- creates fixture
+ - bin/console doctrine:fixtures:load --- executes fixtures
 
 AUTHENTICATION AND SECURITY
  - composer require symfony/orm-pack
@@ -48,25 +49,25 @@ CREATING ENTITY
  - php bin/console make:entity
 
 
-//RESET DB SCRIPT
-bin/console doctrine:schema:drop --force && rm ./migrations/*.php && bin/console doctrine:schema:update --force && bin/console doctrine:migrations:diff && bin/console doctrine:migrations:migrate
+RESET DB SCRIPT
+ - bin/console doctrine:schema:drop --force && rm ./migrations/*.php && bin/console doctrine:schema:update --force && bin/console doctrine:migrations:diff && bin/console doctrine:migrations:migrate
 
 
 CONTROLLERS
- - generating of route ---> $this->generateUrl("name_of_the_route", ["param_1" => 10, "param_2" => 20], UrlGeneratorInterface::ABSOLUTE_URL);
-	--- UrlGeneratorInterface::ABSOLUTE_URL - with this option it will generate absolute URL with http(s)://your_url.end/......
+ - generating route ---> $this->generateUrl("name_of_the_route", ["param_1" => 10, "param_2" => 20], UrlGeneratorInterface::ABSOLUTE_URL);
+	- UrlGeneratorInterface::ABSOLUTE_URL - with this option it will generate absolute URL with http(s)://your_url.end/......
 
 
 CREATING COOKIE
-$cookie = new Cookie("my_new_cookie", "cookie_value", time() + (2 * 365 * 24 * 60 * 60));
-$res = new Response();
-$res->headers->setCookie($cookie);
-$res->send();
+ - $cookie = new Cookie("my_new_cookie", "cookie_value", time() + (2 * 365 * 24 * 60 * 60));
+ - $res = new Response();
+ - $res->headers->setCookie($cookie);
+ - $res->send();
 
 DELETING COOKIE
-$res = new Response();
-$res->headers->clearCookie("my_new_cookie");
-$res->send();
+ - $res = new Response();
+ - $res->headers->clearCookie("my_new_cookie");
+ - $res->send();
 
 
 SESSIONS
@@ -74,25 +75,24 @@ SessionInterface object (DI)
  - set a session value ---> $session->set("name", "session_value");
  - check if session has ---> $session->has("name");
  - get value from session ---> $session->get("name")
----- For more methods look into the SessionInterface object
+	- For more methods look into the SessionInterface object
 
 
 ROUTES
-@Route("/user/{id?}/{page}", name="your_route_name", requirements={"page"="\d+"}, defaults={"page"="dashboard"})
-{id?} ---> ? means that the parameter is optional
-name="your_route_name" ---> Pojmenování routu pomocí kterého pak můžeme volat při $this->redirect("your_route_name");
-requirements={"page"="\d+"} ---> specifikace zadávaného parametru (parametr musí být číslo)
-defaults={"page"="dashboard"} ---> sets the default value for parameter in url
+ - @Route("/user/{id?}/{page}", name="your_route_name", requirements={"page"="\d+"}, defaults={"page"="dashboard"})
+	 - {id?} ---> ? means that the parameter is optional
+	 - name="your_route_name" ---> Pojmenování routu pomocí kterého pak můžeme volat při $this->redirect("your_route_name");
+	 - requirements={"page"="\d+"} ---> specifikace zadávaného parametru (parametr musí být číslo)
+	 - defaults={"page"="dashboard"} ---> sets the default value for parameter in url
 
 
 SERVICES
-You can't call other services in any function of service you can call other services
-only in the __construct magic method
+ - You can't call other services in any function of service you can call other services only in the __construct magic method
  - If you want to create another function which will autorun same as the __construct method you have to use annotations
-	/**
+	"/**
 	  * @required
-	  */
-	--- This will tell symfony that this function should run automatically
+	  */"
+	- This will tell symfony that this function should run automatically
 
 ADD A PARAMETER TO SERVICE
  - services.yaml ->
@@ -103,19 +103,19 @@ ADD A PARAMETER TO SERVICE
 
 SPECIFY PROPERTY (variable value) IN SERVICE YAML FILE
  - You can define properties inside your service inside services.yaml 
-	Namespace\Of\Your\Service
-		properties:
-			your_name_of_prop: "@Namespace\To\Another\Service" || "your_value"
-	--- then you have to have a public variable inside your service: public $your_name_of_prop; -- and symfony will automatically set these vars
-			-- But you wont be able to access them inside __construct method  
+	 - Namespace\Of\Your\Service
+		 - properties:
+			 - your_name_of_prop: "@Namespace\To\Another\Service" || "your_value"
+	- then you have to have a public variable inside your service: public $your_name_of_prop; -- and symfony will automatically set these vars
+			- But you wont be able to access them inside __construct method  
 
 
 
 ADD SPECIFIC SERVICE TO CONTROLLER
  - services.yaml -> 
-Namespace\Of\The\controller
-  bind:
-    $your_variable: '@service' (@monolog.logger.doctrine)
+ - Namespace\Of\The\controller
+  	- bind:
+    		- $your_variable: '@service' (@monolog.logger.doctrine)
  - --> Inside of the controller you have to specify this in magic method __construct($your_variable)
 
 
@@ -126,28 +126,29 @@ LAZY OPTION FOR SERVICES
 
 ASSIGN ALIAS TO SERVICE
  - inside services.yaml ->
- app.your_name
-	class: Namespace\Of\Your\Service
-	---You can assign arugments etc---
-	arguments:
-		$name_of_arg: "value of arg"
- Namespace\Of\Your\Service: "@app.your_name"
+ - app.your_name
+	- class: Namespace\Of\Your\Service
+	 	- ---You can assign arugments etc---
+		- arguments:
+			- $name_of_arg: "value of arg"
+- Namespace\Of\Your\Service: "@app.your_name"
 
 
 TAGS FOR SERVICES
  - You can specify a special tag for a service by using "tags:" in services.yaml
- - Then you have to specify which tag is the service bound to -> - {name: doctrine.event_listener, event: postFlush} --- this will run after flush is executed (you have to create the sam method as the event "postFlush()")
-	--- You can find the tags in Symfony docs
+ - Then you have to specify which tag is the service bound to -> 
+	- {name: doctrine.event_listener, event: postFlush} --- this will run after flush is executed (you have to create the sam method as the event "postFlush()")
+	- --- You can find the tags in Symfony docs
 
 DOWNLOADING A FILE FROM SERVER
  - services.yaml ---> parameters: -> download_directory: "../public/downloads"
  - inside controller ---> $path = $this->getParameter("download_directory"); --- This will get the path to download folder
-	-> return $this->file($path . "your_file"); --- This will download the file
+	- -> return $this->file($path . "your_file"); --- This will download the file
 
 
 PARAM CONVERTER
  - if you want to use param converter (Route("url.../{id_user}") ---> function (User(entity) $id_user){$id_user->getName();}
- 	--- You have to install sensio/framework-extra-bundle ---> composer require sensio/framework-extra-bundle
+ 	- --- You have to install sensio/framework-extra-bundle ---> composer require sensio/framework-extra-bundle
 
 
 
