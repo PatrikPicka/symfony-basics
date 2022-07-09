@@ -161,15 +161,16 @@ DOCTRINE (CREATE A CUSTOM QUERY)
 
 
 CASCADE DELETING AND PERSISTING IN RELATIONS
- - @ORM\OneToMany(targetEntity=Video::class, mappedBy="var_in_relation_entity", cascade={"ALL"} --- @ORM\ManyToOne(targetEntity=User::class, inversedBy="videos", onDelete="CASCADE")
-	--- orphanRemoval = When you call remove on the object you want to delete thru the parent entity this will delete it if you dont use this the record will stay in the DB and could be reused
+ - @ORM\OneToMany(targetEntity=Video::class, mappedBy="var_in_relation_entity", cascade={"ALL"} --- 
+ - @ORM\ManyToOne(targetEntity=User::class, inversedBy="videos", onDelete="CASCADE")
+	- --- orphanRemoval = When you call remove on the object you want to delete thru the parent entity this will delete it if you dont use this the record will stay in the DB and could be reused
  - @ORM\OneToOne(targetEntity=Address::class, cascade={"persist", "remove"}) ---> if you have cascade-persist then when you create new address and add it to user you have to persist just a User not the address
 
 
 LAZY LOADING / EAGER LOADING
  - Normally doctrine/symfony gets only emty array of related objects and loads it only when you want to use them = Lazy loading
  - If you want to load all the related object u have to write your own function inside repository and use query builder
-	--- public function findAllVideos($id) : ?User { return $this->createQueryBuilder("u")->innerJoin("u.videos", "v")->addselect("v")->andWhere("u.id = :id")->setParameter("id", $id)->getQuery()->getOneOrNullResult();}
+	- --- public function findAllVideos($id) : ?User { return $this->createQueryBuilder("u")->innerJoin("u.videos", "v")->addselect("v")->andWhere("u.id = :id")->setParameter("id", $id)->getQuery()->getOneOrNullResult();}
 
 
 POLYMORPHIC TYPE OF RELATIONS
@@ -187,25 +188,25 @@ SUBSCRIBERS AND LISTENERS
  - Create a listener class (KernelResponseListener) then you have to create a function onYourWantedEvent (onKernelResponse)
 		In that function do your logic 
  - Than you have to register this listener inside services.yaml via tags
-		App\Listeners\KernelResponseListener: 
-			tags:
+		- App\Listeners\KernelResponseListener: 
+			- tags:
 				- {name: kernel.event_listener, event: kernel.response}
-	---- This will setup your listener
+	- ---- This will setup your listener
 
 
 CREATE OWN EVENT AND LISTENERS
  - Create two folders in src "Events" and "Listeners"
  - Inside these folder you can create event objects and listeners objects
-	--- We will create an VideoCreatedEvent and VideoCreatedListener classe
-	--- In services.yaml ---
-	App\Listeners\VideoCreatedListener:
-		tags: 
-            - {name: kernel.event_listener, event: video.created.event, method: onVideoCreatedEvent}
-	--- This will assign listener to event "video.created.event" and specify the method which should run inside the listener
+	- --- We will create an VideoCreatedEvent and VideoCreatedListener classe
+	- --- In services.yaml ---
+	- App\Listeners\VideoCreatedListener:
+		- tags: 
+			- - {name: kernel.event_listener, event: video.created.event, method: onVideoCreatedEvent}
+	- --- This will assign listener to event "video.created.event" and specify the method which should run inside the listener
 	
 	 - Creating the event class (VideoCreatedEvent) - this class has to use "Symfony\Contracts\EventDispatcher\Event;" and extend it
 	 - Then create a public __construct($video) function into which u will pass your desired parameter - in this example its video object
-	 	--- inside __construct u pass the param -> $this->video = $video;
+	 	- --- inside __construct u pass the param -> $this->video = $video;
 
 	 - Creating the listener class (VideoCreatedListener)
 	 	- This class needs only the specified function in services.yaml or function with name like this => onYourEventName($event)
@@ -232,36 +233,35 @@ AUTHENTICATION AND SECURITY DETAILS - REGISTER
 		- then you can specify details (rules) for specific fields ---> *@Assert\NotBlank() || *@Assert\Email() || *@Assert\Length(min=2, max=20) && add before class this -> *@UniqueEntity("email") (or your unique field) -> use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 	- Then edit generated Register form
 	- THEN USE THIS CODE TO DISPLAY FORM AND HANDLE FORM
-		$user = new SecurityUser();
-        $form = $this->createForm(RegisterUserType::class, $user);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            $user->setPassword($passEncoder->encodePassword($user, $form->get("password")->getData())); --- $passEncoder = use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-            $user->setEmail($form->get("email")->getData());
-
-            
+	- --- $passEncoder = use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+		- $user = new SecurityUser();
+		- $form = $this->createForm(RegisterUserType::class, $user);
+		- $form->handleRequest($request);
+		- if ($form->isSubmitted() && $form->isValid()){
+			- $user->setPassword($passEncoder->encodePassword($user, $form->get("password")->getData()));
+            	- $user->setEmail($form->get("email")->getData());
             $em->persist($user);
             $em->flush();
             $this->redirectToRoute("app_main");
-        }
+        - }
 
 
 AUTHENTICATION AND SECURITY DETAILS - LOGIN
  - security.yaml -> firewalls -> main
-	-> form_login:
-			login_path: login
-			check_path: login
-			username_parameter: 'email'
-			password_parameter: 'password'
-			csrf_token_generator: security.csrf.token_manager --> only if u want to use csrf (then u have to set enable_authenticator_manager=false)
+	- -> form_login:
+		- login_path: login
+		- check_path: login
+		- username_parameter: 'email'
+		- password_parameter: 'password'
+		- csrf_token_generator: security.csrf.token_manager --> only if u want to use csrf (then u have to set enable_authenticator_manager=false)
 
 LOGIN - REMEMBER ME
  - security.yaml -> firewalls -> main
-	-> remember_me:
-			secret: "%kernel.secret%"
-			lifetime: 604800 #1 week in seconds
-			#always_remember_me: true  --- only if u want always when user logs in to remember him
-			path: /
+	- -> remember_me:
+			- secret: "%kernel.secret%"
+			- lifetime: 604800 #1 week in seconds
+			- #always_remember_me: true  --- only if u want always when user logs in to remember him
+			- path: /
 
 
 ACCESS COTROLL
@@ -287,7 +287,7 @@ PHPUNIT TESTING SYMFONY
  - You have two types of tests - Unit test and Functional tests
 	- Unit tests are used to test specific functionality
 	- Functional tests are used to test controllers
-		--- more at vids 96->106
+		- --- more at vids 96->106
 
 
 EMAILING IN SYMFONY (symfony/mailer)
@@ -297,32 +297,32 @@ EMAILING IN SYMFONY (symfony/mailer)
  - use Symfony\Component\Mime\Address as MailAddress;
  - use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 	- You have to create an a template for email
-Then just use this
-	your_function(MailerInterface $mailer){
-		$email = (new TemplatedEmail())
-			->from("your_email@from_where_mail_is.send")
-			->to(new MailAddress("mail_to@send.mail", "Patrik Picka"))
-			->subject("Order Confirmation")
-			->htmlTemplate("emails/order-conf.html.twig")
-			->context(["order" => ["name" => "Patrik Picka", "id" => 1, "email" => "opicaklp@gmail.com"]]);
+ - Then just use this
+	- your_function(MailerInterface $mailer){
+		- $email = (new TemplatedEmail())
+			- ->from("your_email@from_where_mail_is.send")
+			- ->to(new MailAddress("mail_to@send.mail", "Patrik Picka"))
+			- ->subject("Order Confirmation")
+			- ->htmlTemplate("emails/order-conf.html.twig")
+			- ->context(["order" => ["name" => "Patrik Picka", "id" => 1, "email" => "opicaklp@gmail.com"]]);
 
-		$mailer->send($email);
-	}
+		- $mailer->send($email);
+	- }
 
 
 SYMFONY FORM BUILDER
  - composer require symfony/form
  - bin/console make:form
-	--- This will create a formtype class 
+	- --- This will create a formtype class 
  - Then in controller in which you want to display the form you have to set new Entity on which is the form bound to
- - 		$video = new Video(); -> 
- 		$form = $this->createForm(VideoFormType::class, $video);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            dump($form->getData());
+  	- $video = new Video(); -> 
+ 	- $form = $this->createForm(VideoFormType::class, $video);
+        - $form->handleRequest($request);
+        - if ($form->isSubmitted() && $form->isValid()){
+            - dump($form->getData());
             // return $this->redirectToRoute("app_main");
-        }
-		$form->createView(); ---> inside twig template just call {{form(your_variable_in_which_is_form_assigned)}}
+        - }
+	- $form->createView(); ---> inside twig template just call {{form(your_variable_in_which_is_form_assigned)}}
 
 
 
@@ -338,7 +338,7 @@ TWIG
 CUSTOM ERROR PAGES
  - inside templates folder create bundles -> TwigBundle -> Exception -> error404.html.twig (error a číslo erroru).html.twig
  - after that you have to clear cache so execute this script inside cli -> bin/console cache:clear
- --- Error pages will be shown only on production mode so if you want to see them in dev mode -> server_url/_error/error_code (404, 500 etc.)
+ - --- Error pages will be shown only on production mode so if you want to see them in dev mode -> server_url/_error/error_code (404, 500 etc.)
 
 CUSTOM TWIG EXTENSIONS ("Your string"|slugify)
  - bin/console make:twig-extension
